@@ -187,14 +187,25 @@ Ogr2ogr.prototype._run = function () {
       one(code ? new Error(errbuf || "ogr2ogr failed to do the conversion") : null)
     })
 
-    var killTimeout = setTimeout(function () {
-      if (s._handle) {
-        ostream.emit('error', new Error('ogr2ogr took longer than '+ogr2ogr._timeout+' to complete'))
-        s.stdout.destroy()
-        s.stderr.destroy()
-        s.kill('SIGKILL')
+    var killTimeout;
+
+    function tick() {
+      if (killTimeout) {
+        clearTimeout(killTimeout);
       }
-    }, ogr2ogr._timeout)
+      killTimeout = setTimeout(function () {
+        if (s._handle) {
+          ostream.emit('error', new Error('ogr2ogr took longer than '+ogr2ogr._timeout+' to complete'))
+          s.stdout.destroy()
+          s.stderr.destroy()
+          s.kill('SIGKILL')
+        }
+      }, ogr2ogr._timeout);
+    }
+
+    s.stdout.on('data', tick);
+
+    tick();
   })
 
   function wrapUp (er) {
