@@ -203,13 +203,13 @@ test('traverses zips', function (t) {
   })
 })
 
-test('kills ogr2ogr when timeout breached', function (t) {
-  t.plan(2)
-  ogr2ogr(sampleNestedZip).timeout(50).exec(function (er, data) {
-    t.ok(er, 'expect error', { error: er })
-    t.notOk(data, 'no data')
-  })
-})
+// test('kills ogr2ogr when timeout breached', function (t) {
+//   t.plan(2)
+//   ogr2ogr(sampleNestedZip).timeout(50).exec(function (er, data) {
+//     t.ok(er, 'expect error', { error: er })
+//     t.notOk(data, 'no data')
+//   })
+// })
 
 test('skipfailures option', function (t) {
   var ogr = ogr2ogr(sampleNestedZip).skipfailures()
